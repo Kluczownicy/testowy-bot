@@ -29,11 +29,16 @@ async def play(ctx):
 
     guild = ctx.guild
     voice_client = utils.get(bot.voice_clients, guild=guild)
-    audio_source = FFmpegPCMAudio('dokidoki.mp3')
+    audio_source = FFmpegPCMAudio('music/dokidoki.mp3')
 
     if not voice_client.is_playing():
         voice_client.play(audio_source, after=None)
 
+#@bot.command()
+#async def next(ctx):
+#  guild = ctx.guild
+#  voice_client = utils.get(bot.voice_clients, guild=guild)
+#  audio_source = FFmpegPCMAudio("music/stronger.mp3")
 
 
 @bot.command()
