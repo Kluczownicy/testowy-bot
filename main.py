@@ -37,4 +37,4 @@ async def play(ctx):
 
 keep_alive.keep_alive()
 bot.run(environ['token'])
-#dupa 2
+
