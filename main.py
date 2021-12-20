@@ -26,13 +26,13 @@ async def play(ctx):
         await channel.connect()
     else:
         return
-
+    discord.PCMVolumeTransformer(volume=0.5)
     guild = ctx.guild
     voice_client = utils.get(bot.voice_clients, guild=guild)
     audio_source = FFmpegPCMAudio('music/dokidoki.mp3')
 
     if not voice_client.is_playing():
-        voice_client.play(audio_source, after=None)
+        voice_client.play(audio_source, after="music/stronger.mp3")
 
 #@bot.command()
 #async def next(ctx):
