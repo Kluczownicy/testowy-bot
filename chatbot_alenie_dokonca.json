@@ -1,0 +1,53 @@
+@bot.event
+async def on_ready():
+    print(f"Bot jest gotowy!\nZalogowano jako {bot.user}")
+
+
+@bot.event
+async def on_guild_join(guild):
+    with open("ai_channel.json", "r") as f:
+        ai_channel = json.load(f)
+
+    ai_channel[str(guild.id)] = "Nie ustawiono!"
+
+    with open("ai_channel.json", "w") as f:
+        json.dump(ai_channel, f)
+
+
+@bot.event
+async def on_message(message):
+    with open("ai_channel.json", "r") as f:
+        ai_channel = json.load(f)
+
+    if message.author.bot: return
+
+    if message.channel.id == ai_channel[str(message.guild.id)]:
+        async with aiohttp.ClientSession(
+                headers={"x-api-key": "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"}) as session:
+            async with session.get(
+                    url='https://api.pgamerx.com/v3/ai/response',
+                    params={
+                        "type": "stable",
+                        "message": message.content
+                    }) as response:
+                msg = await response.json()
+                await message.reply(msg[0]["message"], mention_author=False)
+    await bot.process_commands(message)
+
+
+@bot.command(aliases=["set_ai_channel", "sac"])
+@commands.has_permissions(administrator=True)
+async def setaichannel(ctx, channel: discord.TextChannel):
+    print(channel.id)
+    with open("ai_channel.json", "r") as f:
+        ai_channel = json.load(f)
+
+    ai_channel[str(ctx.message.guild.id)] = channel.id
+
+    with open("ai_channel.json", "w") as f:
+        json.dump(ai_channel, f)
+
+    embed = discord.Embed(colour=discord.Colour.green())
+    embed.add_field(name="Kanał dla ai",
+                    value=f"Ustawiono kanał dla ai jako {channel.mention}")
+    await ctx.message.reply(embed=embed, mention_author=False)
